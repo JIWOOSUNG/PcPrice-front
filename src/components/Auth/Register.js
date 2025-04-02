@@ -1,34 +1,54 @@
-import { useState } from "react";
-import api from "../../services/api";
+// /components/auth/register.js
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const Register = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+function Register() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    const handleRegister = async (e) => {
+        e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await api.post("/register", form);
-      alert(res.data.message);
-    } catch (err) {
-      alert(err.response?.data?.error || "회원가입 실패");
-    }
-  };
+        try {
+            const response = await axios.post('http://localhost:5500/api/auth/register', {
+                name,
+                email,
+                password,
+            });
 
-  return (
-    <div>
-      <h2>회원가입</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="이름" onChange={handleChange} required />
-        <input name="email" placeholder="이메일" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="비밀번호" onChange={handleChange} required />
-        <button type="submit">가입하기</button>
-      </form>
-    </div>
-  );
-};
+            alert(response.data.message);
+        } catch (error) {
+            alert(error.response?.data?.error || '회원가입 실패');
+        }
+    };
+
+    return (
+        <div>
+            <h3>회원가입</h3>
+            <form onSubmit={handleRegister}>
+                <input
+                    type="text"
+                    placeholder="이름"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <input
+                    type="email"
+                    placeholder="이메일"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="비밀번호"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">회원가입</button>
+            </form>
+        </div>
+    );
+}
 
 export default Register;
